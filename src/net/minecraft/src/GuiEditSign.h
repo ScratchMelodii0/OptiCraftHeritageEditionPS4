@@ -1,10 +1,11 @@
 #pragma once
+#include "platform/PlatformConfig.h"
 
 #include "GuiScreen.h"
 #include <string>
 
 class TileEntitySign;
-#if defined(PS2_PLATFORM) || defined(WII_PLATFORM)
+#if PLATFORM_GAMEPAD_UI
 class GuiTextField;
 #endif
 
@@ -13,7 +14,7 @@ class GuiEditSign : public GuiScreen
 {
 public:
 	GuiEditSign(TileEntitySign *sign);
-#if defined(PS2_PLATFORM) || defined(WII_PLATFORM)
+#if PLATFORM_GAMEPAD_UI
 	~GuiEditSign() override;
 #endif
 
@@ -33,7 +34,7 @@ protected:
 
 private:
 	TileEntitySign *entitySign;
-#if defined(PS2_PLATFORM) || defined(WII_PLATFORM)
+#if PLATFORM_GAMEPAD_UI
 	GuiTextField *textInput;
 #endif
 	int_t updateCounter;

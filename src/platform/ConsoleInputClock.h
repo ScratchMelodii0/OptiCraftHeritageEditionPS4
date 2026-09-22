@@ -1,8 +1,8 @@
 #pragma once
 
-#if defined(PS2_PLATFORM) || defined(WII_PLATFORM)
+#if defined(PS2_PLATFORM) || defined(WII_PLATFORM) || defined(PS4_PLATFORM)
 
-#if defined(PS2_PLATFORM)
+#if defined(PS2_PLATFORM) || defined(PS4_PLATFORM)
 #include "platform/time.h"
 #else
 #include <ogc/lwp_watchdog.h>
@@ -16,14 +16,15 @@
 // Not System::currentTimeMillis(): that rides std::chrono::system_clock, which
 // on the PS2 is only as alive as the BIOS timer behind it -- the same source
 // that leaves System::nanoTime() sitting still on some revisions. These two are
-// the clocks each console's own code already paces itself with.
+// the clocks each console's own code already paces itself with. The PS4 has a
+// reliable steady_clock and shares the PS2 path.
 inline int consoleInputNowMs()
 {
-#if defined(PS2_PLATFORM)
+#if defined(PS2_PLATFORM) || defined(PS4_PLATFORM)
 	return (int)(getTimeS() * 1000.0f);
 #else
 	return (int)ticks_to_millisecs(gettime());
 #endif
 }
 
-#endif // PS2_PLATFORM || WII_PLATFORM
+#endif // PS2_PLATFORM || WII_PLATFORM || PS4_PLATFORM

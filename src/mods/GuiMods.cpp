@@ -1,4 +1,5 @@
 #include "GuiMods.h"
+#include "platform/PlatformConfig.h"
 #include "GuiSlot.h"
 #include "GuiButton.h"
 #include "Minecraft.h"
@@ -10,7 +11,7 @@
 #include "GuiLoadModsMenu.h"
 #include "mods/ModManager.h"
 
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
 #include "platform/Input.h"
 #endif
 
@@ -239,7 +240,7 @@ void GuiMods::keyTyped(char_t c, int_t key)
 
 void GuiMods::handleSpecializedMenuInput()
 {
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
     const PlatformTextInputSnapshot pad = platformTextInputSnapshot(platformMenuPad());
     if ((pad.pressed & (PLATFORM_TEXT_BACK | PLATFORM_TEXT_CLOSE)) != 0)
     {

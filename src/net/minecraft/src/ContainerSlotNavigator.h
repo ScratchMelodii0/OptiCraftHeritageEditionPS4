@@ -1,6 +1,7 @@
 #pragma once
+#include "platform/PlatformConfig.h"
 
-#if defined(PS2_PLATFORM) || defined(WII_PLATFORM)
+#if PLATFORM_GAMEPAD_UI
 
 #include "java/Type.h"
 

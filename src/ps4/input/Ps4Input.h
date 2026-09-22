@@ -16,6 +16,10 @@ void shutdown();
 // inMenu: a GuiScreen is open. specializedMenuNavigation: that screen drives
 // its own D-pad/button navigation (containers, text fields).
 void poll(bool inMenu, bool specializedMenuNavigation);
+
+// Place the software cursor at an absolute framebuffer position (container
+// slot navigation and keyboard-selected buttons move it this way).
+void setMenuCursor(int x, int y);
 }
 
 #endif

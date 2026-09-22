@@ -1,4 +1,5 @@
 #include "GuiTextField.h"
+#include "platform/PlatformConfig.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -10,7 +11,7 @@
 #include "java/String.h"
 #include "pc/lwjgl/Keyboard.h"
 #include "platform/RenderAPI.h"
-#if defined(PS2_PLATFORM) || defined(WII_PLATFORM)
+#if PLATFORM_GAMEPAD_UI
 #include "VirtualKeyboard.h"
 #endif
 
@@ -390,7 +391,7 @@ void GuiTextField::setFocused(bool focused)
     isFocused = focused;
     if (parentGuiScreen != nullptr)
         parentGuiScreen->notifyTextFieldFocus(this, focused);
-#if defined(PS2_PLATFORM) || defined(WII_PLATFORM)
+#if PLATFORM_GAMEPAD_UI
     VirtualKeyboard::instance().notifyFocus(this, focused);
 #endif
 }

@@ -30,10 +30,10 @@ GuiIngameMenu::GuiIngameMenu()
 	, updateCounter(0)
 	, selectedControlIndex(-1)
 	, hoveredControlIndex(-1)
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
 	, legacyPauseOpenedAtMillis(System::currentTimeMillis())
 #endif
-#if PLATFORM_PS2
+#if PLATFORM_STICK_POINTER_UI
 	, ps2PauseStartReleaseLatch(true)
 	, ps2PauseActionReleaseLatch(true)
 #endif
@@ -125,7 +125,7 @@ void GuiIngameMenu::keyTyped(char_t c, int_t key)
 	const bool legacyPause = mc != nullptr && mc->gameSettings != nullptr && mc->gameSettings->legacyUI;
 	if (legacyPause)
 	{
-#if !PLATFORM_PS2 && !PLATFORM_WII
+#if !PLATFORM_GAMEPAD_UI
 		if (key == lwjgl::Keyboard::KEY_UP)
 		{
 			moveLegacySelection(-1);
@@ -187,7 +187,7 @@ void GuiIngameMenu::closeLegacyPause()
 
 void GuiIngameMenu::handleSpecializedMenuInput()
 {
-#if PLATFORM_PS2
+#if PLATFORM_STICK_POINTER_UI
 	const bool legacyPause = mc != nullptr && mc->gameSettings != nullptr && mc->gameSettings->legacyUI;
 	if (!legacyPause)
 		return;

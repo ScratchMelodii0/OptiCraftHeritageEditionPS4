@@ -1,8 +1,9 @@
 #include "LegacyUiPolicy.h"
+#include "platform/PlatformConfig.h"
 
 bool legacyUiDefaultEnabled()
 {
-#if defined(PS2_PLATFORM) || defined(WII_PLATFORM)
+#if PLATFORM_GAMEPAD_UI
     return true;
 #else
     return false;

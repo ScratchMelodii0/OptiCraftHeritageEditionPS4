@@ -316,9 +316,9 @@ void LegacyPlayGameScreen::updateScreen()
     GuiSelectWorld::updateScreen();
     if (tutorialMessageTicks > 0)
         --tutorialMessageTicks;
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
     const PlatformTextInputSnapshot pad = platformTextInputSnapshot(platformMenuPad());
-#if PLATFORM_PS2
+#if PLATFORM_STICK_POINTER_UI
     if ((pad.pressed & (PLATFORM_TEXT_CLOSE | PLATFORM_TEXT_SHIFT)) != 0)
     {
         if (mc->sndManager != nullptr)
@@ -331,7 +331,7 @@ void LegacyPlayGameScreen::updateScreen()
         moveSelection(-1);
     else if ((pad.pressed & PLATFORM_TEXT_DOWN) != 0)
         moveSelection(1);
-#if PLATFORM_PS2
+#if PLATFORM_STICK_POINTER_UI
     if ((pad.pressed & PLATFORM_TEXT_TYPE) != 0)
         activateSelection();
 #elif PLATFORM_WII
@@ -384,7 +384,7 @@ void LegacyPlayGameScreen::keyTyped(char_t c, int_t key)
         mc->displayGuiScreen(parentScreen);
         return;
     }
-#if !PLATFORM_PS2 && !PLATFORM_WII
+#if !PLATFORM_GAMEPAD_UI
     if (key == 200)
     {
         moveSelection(-1);

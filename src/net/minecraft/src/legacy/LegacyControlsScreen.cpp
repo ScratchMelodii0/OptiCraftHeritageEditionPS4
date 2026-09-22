@@ -41,7 +41,7 @@ bool reservedCaptureKey(int_t key)
 
 const char *capturePrompt()
 {
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
     return "Press a button...";
 #else
     return "Press a key...";
@@ -223,7 +223,7 @@ void LegacyControlsScreen::keyTyped(char_t c, int_t key)
         if (reservedCaptureKey(key))
         {
             cancelCapture();
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
             // The reserved Back button is also a menu-navigation edge. Consume
             // the same latched press so it cannot immediately close Controls.
             (void)platformTextInputSnapshot(platformMenuPad());
@@ -238,7 +238,7 @@ void LegacyControlsScreen::keyTyped(char_t c, int_t key)
 
 void LegacyControlsScreen::mouseClicked(int_t x, int_t y, int_t button)
 {
-#if !PLATFORM_PS2 && !PLATFORM_WII
+#if !PLATFORM_GAMEPAD_UI
     if (captureRow >= 0)
     {
         applyCapturedKey(-100 + button);

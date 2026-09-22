@@ -105,7 +105,7 @@ void LegacyCreateWorldScreen::initGui()
     updateDifficultyControl();
     updateControlVisibility();
     selectControl(0);
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
     // Preserve the console's existing initial text-entry behavior. Once the user
     // closes the keyboard, focus stays off until row 0 is activated again.
     textboxWorldName->setFocused(true);
@@ -194,7 +194,7 @@ void LegacyCreateWorldScreen::syncSelectedControl()
 void LegacyCreateWorldScreen::updatePointerHover(int_t mouseX, int_t mouseY)
 {
     int_t hover = -1;
-#if PLATFORM_PS2
+#if PLATFORM_STICK_POINTER_UI
     // Legacy PS2 menus deliberately suppress the software mouse pointer. Treating
     // its stale coordinates as a live hover leaves D-pad navigation blocked after
     // the virtual keyboard closes.
@@ -204,7 +204,7 @@ void LegacyCreateWorldScreen::updatePointerHover(int_t mouseX, int_t mouseY)
     if (platformMenuPointerActive())
 #endif
     {
-#if !PLATFORM_PS2
+#if !PLATFORM_STICK_POINTER_UI
         GuiTextField *field = moreOptions ? textboxSeed : textboxWorldName;
         if (field != nullptr && pointInside(mouseX, mouseY, layout.contentX, layout.rowY(0), layout.contentWidth, textFieldHeight))
         {
@@ -302,13 +302,13 @@ void LegacyCreateWorldScreen::moveSelection(int_t direction)
 void LegacyCreateWorldScreen::updateScreen()
 {
     GuiCreateWorld::updateScreen();
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
     // The virtual keyboard owns the console text-input snapshot while a field is
     // focused. Do not let menu navigation consume the same presses underneath it.
     if (platformTextInputExclusive())
         return;
     const PlatformTextInputSnapshot pad = platformTextInputSnapshot(platformMenuPad());
-#if PLATFORM_PS2
+#if PLATFORM_STICK_POINTER_UI
     if ((pad.pressed & (PLATFORM_TEXT_CLOSE | PLATFORM_TEXT_SHIFT)) != 0)
     {
         if (mc->sndManager != nullptr)
@@ -325,7 +325,7 @@ void LegacyCreateWorldScreen::updateScreen()
         adjustSelection(-1);
     else if ((pad.pressed & PLATFORM_TEXT_RIGHT) != 0)
         adjustSelection(1);
-#if PLATFORM_PS2
+#if PLATFORM_STICK_POINTER_UI
     if ((pad.pressed & PLATFORM_TEXT_TYPE) != 0)
         activateSelection();
 #elif PLATFORM_WII
@@ -396,7 +396,7 @@ void LegacyCreateWorldScreen::keyTyped(char_t c, int_t key)
         mc->displayGuiScreen(parentScreen);
         return;
     }
-#if !PLATFORM_PS2 && !PLATFORM_WII
+#if !PLATFORM_GAMEPAD_UI
     if (key == 200)
     {
         moveSelection(-1);
