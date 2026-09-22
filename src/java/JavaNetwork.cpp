@@ -1,9 +1,10 @@
 #include "platform/Log.h"
 #include "java/JavaNetwork.h"
 
-// Console builds that select this fallback have no socket backend. Wii builds
-// with networking enabled exclude this translation unit and use JavaNetwork_wii.cpp.
-#if defined(PS2_PLATFORM) || defined(WII_PLATFORM)
+// Console builds that select this fallback have no socket backend. Wii and PS4
+// builds with networking enabled exclude this translation unit and use
+// JavaNetwork_wii.cpp / JavaNetwork_ps4.cpp.
+#if defined(PS2_PLATFORM) || defined(WII_PLATFORM) || defined(PS4_PLATFORM)
 
 #include <istream>
 #include <ostream>

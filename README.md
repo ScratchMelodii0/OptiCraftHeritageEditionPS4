@@ -182,6 +182,8 @@ Default DualShock 4 controls (Jump, Sneak, Inventory, Drop and movement can be r
 | OPTIONS | Pause | | |
 | Touchpad click | Debug screen | | |
 
+Multiplayer connects to Minecraft 1.2.5-compatible servers over TCP (BSD sockets, with hostnames resolved by the system resolver). Online skins, authentication and other HTTP downloads are not available on the PS4 build. Build with `-DPS4_ENABLE_NETWORK=OFF` to leave networking out entirely.
+
 Rendering uses a fixed-function emulation on Piglet (OpenGL ES 2.0) whose shader is compiled at runtime with the system shader compiler module (`libSceShaccVSH.sprx`). On a setup without it, place precompiled PSSL binaries at `/app0/shaders/ffp_vs.sb` and `/app0/shaders/ffp_ps.sb`; if neither is available the game shows a magenta screen and logs the reason. A solid red screen means the game data was not found.
 
 The emulation can be tested on a desktop Linux host with Mesa (`libegl-dev`, `libgles-dev`): the `Ps4GlesPipelineTests` test renders with the same code through EGL/GLES2.
