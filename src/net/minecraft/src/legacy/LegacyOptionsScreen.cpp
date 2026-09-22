@@ -103,7 +103,7 @@ bool LegacyOptionsScreen::handleLegacyNavigationKey(int_t key)
         returnToParent();
         return true;
     }
-#if !PLATFORM_PS2 && !PLATFORM_WII
+#if !PLATFORM_GAMEPAD_UI
     if (key == lwjgl::Keyboard::KEY_UP)
     {
         moveLegacySelection(-1);
@@ -134,14 +134,14 @@ void LegacyOptionsScreen::updateScreen()
 {
     GuiScreen::updateScreen();
     syncLegacySelection();
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
     // A focused GuiTextField gives the virtual keyboard exclusive ownership of
     // these buttons. Do not move or activate the menu underneath the overlay.
     if (platformTextInputExclusive())
         return;
 
     const PlatformTextInputSnapshot pad = platformTextInputSnapshot(platformMenuPad());
-#if PLATFORM_PS2
+#if PLATFORM_STICK_POINTER_UI
     std::uint32_t pressed = pad.pressed;
     if (ps2ActionReleaseLatch)
     {

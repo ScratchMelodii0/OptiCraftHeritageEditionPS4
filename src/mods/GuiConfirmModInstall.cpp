@@ -1,4 +1,5 @@
 #include "GuiConfirmModInstall.h"
+#include "platform/PlatformConfig.h"
 #include "GuiButton.h"
 #include "Minecraft.h"
 #include "FontRenderer.h"
@@ -6,7 +7,7 @@
 #include "ModManager.h"
 #include "GuiMods.h"
 
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
 #include "platform/Input.h"
 #endif
 
@@ -67,7 +68,7 @@ void GuiConfirmModInstall::keyTyped(char_t c, int_t key)
 
 void GuiConfirmModInstall::handleSpecializedMenuInput()
 {
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
     const PlatformTextInputSnapshot pad = platformTextInputSnapshot(platformMenuPad());
     if ((pad.pressed & (PLATFORM_TEXT_BACK | PLATFORM_TEXT_CLOSE)) != 0)
     {

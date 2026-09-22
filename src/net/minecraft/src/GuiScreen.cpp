@@ -1,4 +1,5 @@
 #include "GuiScreen.h"
+#include "platform/PlatformConfig.h"
 #include "SoundManager.h"
 #include "GameSettings.h"
 #include "GuiButton.h"
@@ -12,10 +13,10 @@
 #include "pc/lwjgl/Mouse.h"
 #include "platform/PlatformTuning.h"
 #include "platform/Input.h"
-#if !PLATFORM_PS2 && !PLATFORM_WII
+#if !PLATFORM_GAMEPAD_UI
 #include "SDL_clipboard.h"
 #endif
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
 #include "VirtualKeyboard.h"
 #include "ContainerSlotNavigator.h"
 #endif
@@ -37,11 +38,11 @@ namespace
 // permanently switched off.
 bool menuPointerInputSuppressed(Minecraft *mc)
 {
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
 	if (mc != nullptr && mc->currentScreen != nullptr && mc->currentScreen->suppressesPlatformPointerInput())
 		return true;
 #endif
-#if PLATFORM_PS2
+#if PLATFORM_STICK_POINTER_UI
 	return mc != nullptr && mc->gameSettings != nullptr && mc->gameSettings->legacyUI &&
 	       (mc->currentScreen == nullptr || !mc->currentScreen->allowsPlatformPointerInput());
 #elif PLATFORM_WII
@@ -55,11 +56,11 @@ bool menuPointerInputSuppressed(Minecraft *mc)
 
 bool menuCursorSuppressed(Minecraft *mc)
 {
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
 	if (mc != nullptr && mc->currentScreen != nullptr && mc->currentScreen->suppressesPlatformPointerInput())
 		return true;
 #endif
-#if PLATFORM_PS2
+#if PLATFORM_STICK_POINTER_UI
 	if (!platformMenuCursorVisible())
 		return true;
 	if (mc == nullptr || mc->gameSettings == nullptr || !mc->gameSettings->legacyUI)
@@ -192,7 +193,7 @@ void GuiScreen::keyTyped(char_t c, int_t key)
 jstring GuiScreen::getClipboardString()
 {
 	// SDL clipboard
-#if !PLATFORM_PS2 && !PLATFORM_WII
+#if !PLATFORM_GAMEPAD_UI
 	char *text = SDL_GetClipboardText();
 	if (text)
 	{
@@ -206,7 +207,7 @@ jstring GuiScreen::getClipboardString()
 
 void GuiScreen::setClipboardString(const std::string &text)
 {
-#if !PLATFORM_PS2 && !PLATFORM_WII
+#if !PLATFORM_GAMEPAD_UI
 	SDL_SetClipboardText(text.c_str());
 #else
 	(void)text;
@@ -293,7 +294,7 @@ void GuiScreen::initGui()
 void GuiScreen::handleInput()
 {
 	handleSpecializedMenuInput();
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
 	// Console GUI helpers consume the platform snapshot here, after the native
 	// backend has published this frame's controller state and before queued
 	// mouse/keyboard events are dispatched to the screen. Keeping this routing
@@ -302,7 +303,7 @@ void GuiScreen::handleInput()
 	VirtualKeyboard::instance().tick();
 	if (!platformTextInputExclusive())
 		ContainerSlotNavigator::instance().tick();
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
 	handleConsoleJavaUiNavigation();
 #endif
 #endif
@@ -317,7 +318,7 @@ void GuiScreen::handleMouseInput()
 
 	if (lwjgl::Mouse::getEventDX() != 0 || lwjgl::Mouse::getEventDY() != 0)
 		clearKeyboardSelectionFromPointer();
-#if !PLATFORM_PS2 && !PLATFORM_WII
+#if !PLATFORM_GAMEPAD_UI
 	if (lwjgl::Mouse::getEventButtonState())
 		clearKeyboardSelectionFromPointer();
 #endif
@@ -366,7 +367,7 @@ bool GuiScreen::isJavaUiKeyboardNavigationEnabled() const
 		return false;
 	if (platformPadRebindExclusive() || platformContainerNavigationActive())
 		return false;
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
 	if (platformTextInputExclusive())
 		return false;
 #endif
@@ -507,7 +508,7 @@ bool GuiScreen::handleJavaUiNavigationKey(int_t key)
 
 void GuiScreen::moveMenuCursorToKeyboardSelection()
 {
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
 	if (mc == nullptr || keyboardSelectedControlIndex < 0 ||
 		keyboardSelectedControlIndex >= static_cast<int_t>(controlList.size()) || width <= 0 || height <= 0)
 		return;
@@ -535,7 +536,7 @@ void GuiScreen::clearKeyboardSelectionFromPointer()
 	}
 }
 
-#if PLATFORM_PS2 || PLATFORM_WII
+#if PLATFORM_GAMEPAD_UI
 void GuiScreen::handleConsoleJavaUiNavigation()
 {
 	if (!isJavaUiKeyboardNavigationEnabled())

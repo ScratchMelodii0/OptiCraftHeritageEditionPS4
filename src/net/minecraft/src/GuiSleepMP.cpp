@@ -1,4 +1,5 @@
 #include "GuiSleepMP.h"
+#include "platform/PlatformConfig.h"
 #include "java/String.h"
 #include "GuiButton.h"
 #include "StringTranslate.h"
@@ -16,7 +17,7 @@ void GuiSleepMP::initGui()
 {
 	GuiChat::initGui();
 	StringTranslate *tr = StringTranslate::getInstance();
-#if defined(PS2_PLATFORM) || defined(WII_PLATFORM)
+#if PLATFORM_GAMEPAD_UI
 	controlList.push_back(new GuiButton(1, width / 2 - 100, height - 154, tr->translateKey("multiplayer.stopSleeping")));
 #else
 	controlList.push_back(new GuiButton(1, width / 2 - 100, height - 40, tr->translateKey("multiplayer.stopSleeping")));

@@ -1,7 +1,8 @@
 #include "VirtualKeyboard.h"
+#include "platform/PlatformConfig.h"
 #include "java/String.h"
 
-#if defined(PS2_PLATFORM) || defined(WII_PLATFORM)
+#if PLATFORM_GAMEPAD_UI
 
 #include "platform/ConsoleInputClock.h"
 #include "GuiTextField.h"

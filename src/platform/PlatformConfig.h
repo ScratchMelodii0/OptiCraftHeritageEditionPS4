@@ -47,6 +47,21 @@
 #  endif
 #endif
 
+// The GUI is driven by a game controller rather than a keyboard and mouse:
+// on-screen virtual keyboard for text fields, D-pad container-slot navigation,
+// console button prompts and pad-button key bindings. No desktop clipboard.
+#ifndef PLATFORM_GAMEPAD_UI
+#  define PLATFORM_GAMEPAD_UI (PLATFORM_PS2 || PLATFORM_WII || PLATFORM_PS4)
+#endif
+
+// Within the gamepad UI, the menu pointer is a stick-driven cursor and the
+// legacy screens are navigated with the D-pad (PS2, PS4). The Wii instead has
+// an IR pointer that owns the cursor while it is aimed at the screen, and its
+// screens branch on platformMenuPointerActive() for that.
+#ifndef PLATFORM_STICK_POINTER_UI
+#  define PLATFORM_STICK_POINTER_UI (PLATFORM_PS2 || PLATFORM_PS4)
+#endif
+
 // User-facing hardware calibration features.
 #ifndef PLATFORM_HAS_CONTROLLER_CALIBRATION
 #  define PLATFORM_HAS_CONTROLLER_CALIBRATION (PLATFORM_PS2 || PLATFORM_WII)

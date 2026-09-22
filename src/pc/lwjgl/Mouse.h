@@ -2,7 +2,7 @@
 
 #include "java/Type.h"
 
-#if !defined(PS2_PLATFORM) && !defined(WII_PLATFORM)
+#if !defined(PS2_PLATFORM) && !defined(WII_PLATFORM) && !defined(PS4_PLATFORM)
 #include "SDL_events.h"
 #endif
 
@@ -13,9 +13,10 @@ namespace Mouse
 namespace detail
 {
 
-#if defined(PS2_PLATFORM) || defined(WII_PLATFORM)
+#if defined(PS2_PLATFORM) || defined(WII_PLATFORM) || defined(PS4_PLATFORM)
 // Consoles have no SDL event pump; the platform's input poll feeds events here.
 //   PS2 — right stick drives a simulated cursor.
+//   PS4 — left stick / D-pad drive a simulated cursor, as on the PS2.
 //   Wii — the Wiimote IR pointer drives it directly, with the Classic/GC right
 //         stick as the fallback when the pointer is off-screen.
 void pushMotion(int x, int y, int xrel, int yrel);
