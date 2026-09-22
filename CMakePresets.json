@@ -140,6 +140,43 @@
       "cacheVariables": {
         "WII_BRINGUP": "ON"
       }
+    },
+    {
+      "name": "ps4-release",
+      "displayName": "PS4 Release (x86_64 / OpenOrbis)",
+      "description": "PlayStation 4 homebrew Release build via the OpenOrbis PS4 Toolchain (clang + lld). Requires OO_PS4_TOOLCHAIN. PS4_BRINGUP stays ON until the full-game backends land.",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/ps4-release",
+      "toolchainFile": "${sourceDir}/cmake/ps4_toolchain.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "PLATFORM": "PS4",
+        "PS4_BRINGUP": "ON",
+        "PS4_ENABLE_SOUND": "ON",
+        "PS4_ENABLE_NETWORK": "ON",
+        "MC_LOG_LEVEL": "0"
+      }
+    },
+    {
+      "name": "ps4-debug",
+      "displayName": "PS4 Debug (x86_64 / OpenOrbis)",
+      "description": "Debug PlayStation 4 homebrew build via the OpenOrbis PS4 Toolchain.",
+      "inherits": "ps4-release",
+      "binaryDir": "${sourceDir}/build/ps4-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "MC_LOG_LEVEL": "2"
+      }
+    },
+    {
+      "name": "ps4-bringup",
+      "displayName": "PS4 Bring-up (x86_64 / OpenOrbis)",
+      "description": "Minimal OpenOrbis toolchain, Piglet and DualShock 4 smoke test.",
+      "inherits": "ps4-release",
+      "binaryDir": "${sourceDir}/build/ps4-bringup",
+      "cacheVariables": {
+        "PS4_BRINGUP": "ON"
+      }
     }
   ],
   "buildPresets": [
@@ -201,6 +238,24 @@
       "name": "wii-bringup",
       "displayName": "Build Wii Bring-up",
       "configurePreset": "wii-bringup",
+      "jobs": 0
+    },
+    {
+      "name": "ps4-release",
+      "displayName": "Build PS4 Release",
+      "configurePreset": "ps4-release",
+      "jobs": 0
+    },
+    {
+      "name": "ps4-debug",
+      "displayName": "Build PS4 Debug",
+      "configurePreset": "ps4-debug",
+      "jobs": 0
+    },
+    {
+      "name": "ps4-bringup",
+      "displayName": "Build PS4 Bring-up",
+      "configurePreset": "ps4-bringup",
       "jobs": 0
     }
   ]

@@ -47,6 +47,14 @@ if(NINTENDO_WII OR (DEFINED PLATFORM AND PLATFORM STREQUAL "WII"))
     return()
 endif()
 
+# PlayStation 4 homebrew build. cmake/ps4_toolchain.cmake (wired in by the ps4-*
+# presets) defines PLAYSTATION4; -DPLATFORM=PS4 works too. Same shape as the
+# PS2/Wii branches: cmake/ps4.cmake builds its own target and return()s.
+if(PLAYSTATION4 OR (DEFINED PLATFORM AND PLATFORM STREQUAL "PS4"))
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ps4.cmake)
+    return()
+endif()
+
 enable_testing()
 
 function(opticraft_add_optional_test target test_source)
