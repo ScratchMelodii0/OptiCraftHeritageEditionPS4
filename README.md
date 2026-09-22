@@ -44,6 +44,18 @@ The Wii build uses devkitPPC/libogc and a native GX rendering path. The Homebrew
 apps/OptiCraft/
 ```
 
+### PlayStation 4 (homebrew)
+
+The PS4 build targets jailbroken consoles (GoldHEN, Mira) and the shadPS4 emulator through the open-source [OpenOrbis PS4 Toolchain](https://github.com/OpenOrbis/OpenOrbis-PS4-Toolchain). No official Sony SDK is used. Rendering goes through Piglet (the system OpenGL ES 2.0 / EGL implementation), input through libScePad (DualShock 4), and audio through libSceAudioOut.
+
+> **Status:** work in progress. The `ps4-*` presets currently build the bring-up target (Piglet/EGL context, controller polling, eboot/pkg packaging). The full-game backends are being added in phases.
+
+Game data is read from the package (`/app0/data/`) and worlds and options are written to:
+
+```text
+/data/opticraft/
+```
+
 ## Source layout
 
 ```text
@@ -55,13 +67,14 @@ src/
   pc/           Desktop-specific implementation
   ps2/          PlayStation 2 implementation
   wii/          Nintendo Wii implementation
+  ps4/          PlayStation 4 homebrew implementation (OpenOrbis)
   util/         Shared utility code
 
 cmake/          Toolchains, source selection, and platform build logic
 external/       Third-party dependencies
 ```
 
-Platform targets deliberately select one implementation for each public backend. This keeps PC, PS2, and Wii implementations from accidentally entering the same link target.
+Platform targets deliberately select one implementation for each public backend. This keeps PC, PS2, Wii, and PS4 implementations from accidentally entering the same link target.
 
 ## Building
 
@@ -115,6 +128,45 @@ cmake --build --preset wii-release
 ```
 
 Use `wii-debug` for a debug build and `wii-bringup` for the minimal hardware/toolchain bring-up target.
+
+### PlayStation 4 (homebrew)
+
+Requirements:
+
+- The [OpenOrbis PS4 Toolchain](https://github.com/OpenOrbis/OpenOrbis-PS4-Toolchain) (release archive, v0.5.2 or newer), with the `OO_PS4_TOOLCHAIN` environment variable pointing at it. `-DOO_PS4_TOOLCHAIN=<path>` also works.
+- LLVM/clang 10+ with `ld.lld` on `PATH` (the toolchain uses the host clang).
+- Ninja.
+
+```text
+export OO_PS4_TOOLCHAIN=/opt/OpenOrbis/PS4Toolchain
+cmake --preset ps4-release
+cmake --build --preset ps4-release
+```
+
+Use `ps4-debug` for a debug build (log level 2) and `ps4-bringup` for the minimal hardware/toolchain smoke test. The build writes:
+
+```text
+bin/ps4/OptiCraft.elf        linked ELF (debug symbols)
+bin/ps4/pkg/eboot.bin        fake-signed SELF produced by create-fself
+bin/ps4/pkg/sce_sys/         param.sfo, icon0.png
+```
+
+To produce an installable package (stages `data/` into the package first):
+
+```text
+cmake --build build/ps4-release --target ps4-pkg
+```
+
+This writes `bin/ps4/IV0000-OPTC00173_00-OPTICRAFTHERITAG.pkg`. Title id, content id, and title can be changed with `PS4_TITLE_ID`, `PS4_CONTENT_ID`, and `PS4_TITLE`.
+
+Installing on a console:
+
+1. Load GoldHEN (or another HEN with fake package support).
+2. Copy the `.pkg` to a FAT32/exFAT USB drive (root or `PS4/`) or send it with a remote package installer.
+3. Install it from *Debug Settings → Game → Package Installer* (or GoldHEN's package installer) and launch *OptiCraft Heritage* from the home screen.
+4. Logs go to the kernel debug channel (GoldHEN klog / shadPS4 console) and to `/data/opticraft/` over FTP.
+
+For shadPS4, point the emulator at `bin/ps4/pkg/` (the folder containing `eboot.bin`) or install the `.pkg`.
 
 ## Development notes
 

@@ -7,6 +7,8 @@
 //                          gsKit/GLES wrapper, PS2SDK, VU/GS, etc.
 //   PLATFORM_WII        -> Nintendo Wii only. Use for WPAD/PAD, libfat paths,
 //                          the GX wrapper, libogc, ASND, MEM1/MEM2, etc.
+//   PLATFORM_PS4        -> PlayStation 4 homebrew (OpenOrbis) only. Use for
+//                          libScePad, Piglet/GLES2, libSceAudioOut, /data paths.
 //
 // Use feature/profile checks for game-side compromises. There are TWO, and the
 // split matters -- see the PLATFORM_BOUNDED_WORLD block further down:
@@ -34,6 +36,14 @@
 #    define PLATFORM_WII 1
 #  else
 #    define PLATFORM_WII 0
+#  endif
+#endif
+
+#ifndef PLATFORM_PS4
+#  if defined(PS4_PLATFORM)
+#    define PLATFORM_PS4 1
+#  else
+#    define PLATFORM_PS4 0
 #  endif
 #endif
 
@@ -183,7 +193,7 @@
 #endif
 
 #ifndef PLATFORM_PC
-#  if PLATFORM_PS2 || PLATFORM_WII
+#  if PLATFORM_PS2 || PLATFORM_WII || PLATFORM_PS4
 #    define PLATFORM_PC 0
 #  else
 #    define PLATFORM_PC 1
