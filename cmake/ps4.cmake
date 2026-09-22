@@ -81,6 +81,11 @@ else()
     # stb_vorbis decodes the .ogg assets for the libSceAudioOut mixer.
     list(APPEND PS4_SOURCES "${CMAKE_SOURCE_DIR}/src/pc/external/stb_vorbis.cpp")
 
+    # Without sound the libSceAudioOut mixer is not linked at all.
+    if(NOT PS4_ENABLE_SOUND)
+        mcbeta_exclude_sources(PS4_SOURCES "[/\\]ps4[/\\]audio[/\\]")
+    endif()
+
     # JavaNetwork.cpp is the SDL_net desktop backend.
     if(PS4_ENABLE_NETWORK)
         mcbeta_exclude_sources(PS4_SOURCES "[/\\]java[/\\]JavaNetwork\\.cpp$")
