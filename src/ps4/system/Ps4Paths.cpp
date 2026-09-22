@@ -51,6 +51,17 @@ const char* gameDataDir()
     }
     return resolved.empty() ? nullptr : resolved.c_str();
 }
+
+const char* installDir()
+{
+    static std::string install;
+    if (install.empty())
+    {
+        const char* data = gameDataDir();
+        install = data != nullptr ? std::string(data, std::string(data).rfind('/')) : "/app0";
+    }
+    return install.c_str();
+}
 }
 
 #endif // PS4_PLATFORM

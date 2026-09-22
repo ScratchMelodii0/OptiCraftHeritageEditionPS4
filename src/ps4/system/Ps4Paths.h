@@ -17,6 +17,10 @@ bool ensureWritableRoot();
 const char* writableRoot();   // "/data/opticraft"
 // Directory holding assets/ and resources/, or nullptr if none was found.
 const char* gameDataDir();
+// The directory gameDataDir() lives in ("/data/opticraft" or "/app0"): where
+// an assets.pak is looked for and what GameResources::getExeDir() reports.
+// Falls back to "/app0" when no data was found, so paths stay well-formed.
+const char* installDir();
 }
 
 #endif
