@@ -94,6 +94,28 @@ opticraft_add_optional_test(StructureReservationTests
     src/net/minecraft/src/StructureBoundingBox.cpp
 )
 
+# The PS4 GLES2 fixed-function emulation, exercised on a host EGL/GLES2
+# (Mesa). Skipped when those libraries are not installed.
+find_library(OPTICRAFT_HOST_EGL EGL)
+find_library(OPTICRAFT_HOST_GLESV2 GLESv2)
+if(OPTICRAFT_HOST_EGL AND OPTICRAFT_HOST_GLESV2)
+    opticraft_add_optional_test(Ps4GlesPipelineTests
+        src/ps4/tools/Ps4GlesPipelineTests.cpp
+        src/ps4/tools/host/Ps4DebugLogHost.cpp
+        src/platform/RenderAPI_GLES_PS4.cpp
+        src/ps4/render/Ps4GlesPipeline.cpp
+        src/ps4/render/Ps4GlesShader.cpp
+        src/ps4/render/Ps4GlesDisplayLists.cpp
+    )
+    if(TARGET Ps4GlesPipelineTests)
+        target_compile_definitions(Ps4GlesPipelineTests PRIVATE PS4_PLATFORM=1 MC_LOG_LEVEL=0)
+        # The shim directory must win over src/ for ps4/render/Ps4Gl.h.
+        target_include_directories(Ps4GlesPipelineTests BEFORE PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/ps4/tools/host")
+        target_link_libraries(Ps4GlesPipelineTests PRIVATE ${OPTICRAFT_HOST_EGL} ${OPTICRAFT_HOST_GLESV2})
+        set_tests_properties(Ps4GlesPipelineTests PROPERTIES ENVIRONMENT "EGL_PLATFORM=surfaceless")
+    endif()
+endif()
+
 opticraft_add_optional_test(WiiContainerCursorPolicyTests
     tests/WiiContainerCursorPolicyTests.cpp
 )

@@ -73,6 +73,11 @@ else()
     # PS4 stores stats locally; keep the desktop synchronizer out of the target.
     mcbeta_exclude_remote_stats_sources(PS4_SOURCES)
 
+    # The PS4 renders terrain through the desktop display-list path
+    # (PLATFORM_DISPLAY_LISTS); its RenderList replay is backend-neutral and
+    # lives with the desktop sources, so it is taken from there by name.
+    list(APPEND PS4_SOURCES "${CMAKE_SOURCE_DIR}/src/pc/minecraft/RenderList.cpp")
+
     # stb_vorbis decodes the .ogg assets for the libSceAudioOut mixer.
     list(APPEND PS4_SOURCES "${CMAKE_SOURCE_DIR}/src/pc/external/stb_vorbis.cpp")
 

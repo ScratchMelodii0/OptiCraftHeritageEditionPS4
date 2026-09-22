@@ -11,7 +11,7 @@
 #include "ps4/system/Ps4Piglet.h"
 
 #include <orbis/Pad.h>
-#include <orbis/Pigletv2VSH.h>
+#include "ps4/render/Ps4Gl.h"
 
 #include <cmath>
 #include <sys/stat.h>

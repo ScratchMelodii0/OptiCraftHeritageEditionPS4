@@ -51,6 +51,10 @@ bool loadRequired()
     if (!loadInternal(ORBIS_SYSMODULE_INTERNAL_PAD, "Pad")) return false;
     if (!loadInternal(ORBIS_SYSMODULE_INTERNAL_AUDIOOUT, "AudioOut")) return false;
     if (!loadSandboxModule("libScePigletv2VSH.sprx")) return false;
+    // Runtime GLSL compiler for Piglet. Optional: without it the renderer
+    // falls back to precompiled shader binaries (see Ps4GlesShader.cpp).
+    if (!loadSandboxModule("libSceShaccVSH.sprx"))
+        Ps4DebugLog::printf("[ps4] runtime shader compiler unavailable; precompiled shaders required\n");
 
     // Hide the system splash only once the modules are up: before this the
     // user sees the package's own splash, after it our first frame.

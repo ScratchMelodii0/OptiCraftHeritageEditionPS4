@@ -4,7 +4,7 @@
 #include "ps4/system/Ps4DebugLog.h"
 
 #include <orbis/libkernel.h>
-#include <orbis/Pigletv2VSH.h>   // pulls in EGL/egl.h and GLES2/gl2.h
+#include "ps4/render/Ps4Gl.h"
 
 #include <cstring>
 
