@@ -166,6 +166,10 @@ Installing on a console:
 3. Install it from *Debug Settings → Game → Package Installer* (or GoldHEN's package installer) and launch *OptiCraft Heritage* from the home screen.
 4. Logs go to the kernel debug channel (GoldHEN klog / shadPS4 console) and to `/data/opticraft/` over FTP.
 
+Rendering uses a fixed-function emulation on Piglet (OpenGL ES 2.0) whose shader is compiled at runtime with the system shader compiler module (`libSceShaccVSH.sprx`). On a setup without it, place precompiled PSSL binaries at `/app0/shaders/ffp_vs.sb` and `/app0/shaders/ffp_ps.sb`; if neither is available the game shows a magenta screen and logs the reason. A solid red screen means the game data was not found.
+
+The emulation can be tested on a desktop Linux host with Mesa (`libegl-dev`, `libgles-dev`): the `Ps4GlesPipelineTests` test renders with the same code through EGL/GLES2.
+
 For shadPS4, point the emulator at `bin/ps4/pkg/` (the folder containing `eboot.bin`) or install the `.pkg`.
 
 ## Development notes

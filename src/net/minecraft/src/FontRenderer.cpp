@@ -9,7 +9,7 @@
 #include "java/String.h"
 #include "java/Arithmetic.h"
 #include "platform/PlatformConfig.h"
-#if PLATFORM_PC
+#if PLATFORM_DISPLAY_LISTS
 #include "GLAllocation.h"
 #endif
 #include "GameSettings.h"
@@ -41,7 +41,7 @@ void FontRenderer::refresh(RenderEngine *renderEngine)
 	if (renderEngine == nullptr)
 		return;
 
-#if PLATFORM_PC
+#if PLATFORM_DISPLAY_LISTS
 	if (fontDisplayLists != 0)
 	{
 		GLAllocation::deleteDisplayLists(fontDisplayLists);
@@ -175,7 +175,7 @@ void FontRenderer::readCustomCharWidths(const std::string &textureFile, RenderEn
 
 FontRenderer::~FontRenderer()
 {
-#if PLATFORM_PC
+#if PLATFORM_DISPLAY_LISTS
 	if (fontDisplayLists != 0)
 	{
 		GLAllocation::deleteDisplayLists(fontDisplayLists);

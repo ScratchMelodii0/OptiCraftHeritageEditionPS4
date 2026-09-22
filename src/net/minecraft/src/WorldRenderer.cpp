@@ -79,7 +79,7 @@ WorldRenderer::WorldRenderer(World *world, std::vector<TileEntity *> *tileEntiti
 	worldObj      = world;
 	tileEntities  = tileEntitiesIn;
 	sizeWidth = sizeHeight = sizeDepth = size;
-#if PLATFORM_PC
+#if PLATFORM_DISPLAY_LISTS
 	glRenderList = glListId;
 #else
 	(void)glListId;
@@ -109,12 +109,12 @@ WorldRenderer::WorldRenderer(World *world, std::vector<TileEntity *> *tileEntiti
 #endif
 	needsUpdate    = false;
 	isChunkLit     = false;
-#if PLATFORM_PC
+#if PLATFORM_DISPLAY_LISTS
 	isWaitingOnOcclusionQuery = false;
 #endif
 	isVisible      = true;
 	isInFrustum    = false;
-#if PLATFORM_PC || PLATFORM_PS2
+#if PLATFORM_DISPLAY_LISTS || PLATFORM_PS2
 	isFullyInFrustum = false;
 #endif
 #if PLATFORM_PC_LEGACY
@@ -131,7 +131,7 @@ WorldRenderer::WorldRenderer(World *world, std::vector<TileEntity *> *tileEntiti
 		pcLegacyPublishedVisibility[face] = 0x3f;
 	pcLegacyCpuVisible = true;
 #endif
-#if PLATFORM_PC
+#if PLATFORM_DISPLAY_LISTS
 	isVisibleFromPosition = false;
 	visibleFromX = 0.0;
 	visibleFromY = 0.0;
@@ -253,7 +253,7 @@ void WorldRenderer::cleanup()
 	renderTerrainChunkHandlesDestroy(terrainChunkHandles);
 #endif
 
-#if PLATFORM_PC
+#if PLATFORM_DISPLAY_LISTS
 	glRenderList = 0;
 	glOcclusionQuery = 0;
 #endif
@@ -299,7 +299,7 @@ void WorldRenderer::setPosition(int_t x, int_t y, int_t z)
 	// actually rebuilds. Repositioning a renderer grid can touch hundreds of
 	// sections at once; compiling a list for every moved section here creates a
 	// large synchronous spike before any useful terrain work begins.
-#if PLATFORM_PC
+#if PLATFORM_DISPLAY_LISTS
 	needsOcclusionBoxUpdate = true;
 	isVisibleFromPosition = false;
 #endif
@@ -307,7 +307,7 @@ void WorldRenderer::setPosition(int_t x, int_t y, int_t z)
 	markDirty();
 }
 
-#if PLATFORM_PC
+#if PLATFORM_DISPLAY_LISTS
 void WorldRenderer::updateOcclusionBox()
 {
 	if (!needsOcclusionBoxUpdate)
@@ -691,10 +691,10 @@ void WorldRenderer::setDontDraw()
 	ps2ResetBuildState();
 #endif
 	isInFrustum = false;
-#if PLATFORM_PC || PLATFORM_PS2
+#if PLATFORM_DISPLAY_LISTS || PLATFORM_PS2
 	isFullyInFrustum = false;
 #endif
-#if PLATFORM_PC
+#if PLATFORM_DISPLAY_LISTS
 	isVisibleFromPosition = false;
 #endif
 	isInitialized = false;
@@ -715,7 +715,7 @@ void WorldRenderer::detachFromWorld()
 	worldObj = nullptr;
 }
 
-#if PLATFORM_PC
+#if PLATFORM_DISPLAY_LISTS
 void WorldRenderer::callOcclusionQueryList()
 {
 	renderCallDisplayList(glRenderList + 2);

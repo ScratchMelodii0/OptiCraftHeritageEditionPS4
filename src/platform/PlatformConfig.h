@@ -109,7 +109,7 @@
 #endif
 
 #ifndef PLATFORM_LOCAL_STATS
-#  define PLATFORM_LOCAL_STATS (PLATFORM_PS2 || PLATFORM_WII)
+#  define PLATFORM_LOCAL_STATS (PLATFORM_PS2 || PLATFORM_WII || PLATFORM_PS4)
 #endif
 
 #ifndef PLATFORM_ENUMERATE_SAVE_DIRECTORIES
@@ -117,7 +117,7 @@
 #endif
 
 #ifndef PLATFORM_LOCAL_RESOURCES_ONLY
-#  if defined(NO_NETWORK) || PLATFORM_PS2 || PLATFORM_WII
+#  if defined(NO_NETWORK) || PLATFORM_PS2 || PLATFORM_WII || PLATFORM_PS4
 #    define PLATFORM_LOCAL_RESOURCES_ONLY 1
 #  else
 #    define PLATFORM_LOCAL_RESOURCES_ONLY 0
@@ -170,7 +170,7 @@
 #endif
 
 #ifndef PLATFORM_HAS_VIRTUAL_KEYBOARD
-#  define PLATFORM_HAS_VIRTUAL_KEYBOARD (PLATFORM_PS2 || PLATFORM_WII)
+#  define PLATFORM_HAS_VIRTUAL_KEYBOARD (PLATFORM_PS2 || PLATFORM_WII || PLATFORM_PS4)
 #endif
 
 #ifndef PLATFORM_SIMPLE_TRANSPARENT_TERRAIN
@@ -198,6 +198,17 @@
 #  else
 #    define PLATFORM_PC 1
 #  endif
+#endif
+
+// The desktop GL 1.x retained renderer: display lists for terrain, sky, clouds
+// and model boxes, the original RenderList replay, the lightmap on texture
+// unit 1 during the entity pass, and (where the driver offers them) occlusion
+// queries. PC runs it on real OpenGL; the PS4 runs it on Piglet GLES2 through
+// the fixed-function emulation in src/ps4/render. Gate on this -- not on
+// PLATFORM_PC -- for anything that is about that renderer rather than about
+// the desktop (SDL, Direct3D 9, windowing).
+#ifndef PLATFORM_DISPLAY_LISTS
+#  define PLATFORM_DISPLAY_LISTS (PLATFORM_PC || PLATFORM_PS4)
 #endif
 
 // Low-end desktop build selected by gcc32-legacy-release. This is deliberately
@@ -362,7 +373,7 @@ declares."
 // where they are aiming. Both console backends feed lwjgl::Mouse from a stick
 // (PS2) or the Wiimote IR pointer (Wii), so the coordinates are already there.
 #ifndef PLATFORM_SOFTWARE_CURSOR
-#  if PLATFORM_PS2 || PLATFORM_WII
+#  if PLATFORM_PS2 || PLATFORM_WII || PLATFORM_PS4
 #    define PLATFORM_SOFTWARE_CURSOR 1
 #  else
 #    define PLATFORM_SOFTWARE_CURSOR 0
@@ -372,7 +383,7 @@ declares."
 // Framebuffer RGB readback is used only by screenshot backends. PS2 does not
 // expose it, so do not keep a false RenderAPI stub in that target.
 #ifndef PLATFORM_TEXTURE_QUALITY_CONTROLS
-#  define PLATFORM_TEXTURE_QUALITY_CONTROLS (PLATFORM_PC || PLATFORM_WII)
+#  define PLATFORM_TEXTURE_QUALITY_CONTROLS (PLATFORM_PC || PLATFORM_WII || PLATFORM_PS4)
 #endif
 
 #ifndef PLATFORM_FRAMEBUFFER_READBACK
