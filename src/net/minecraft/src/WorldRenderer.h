@@ -55,13 +55,6 @@ public:
 #if defined(WII_PLATFORM) || defined(PS2_PLATFORM)
 	void renderExtraTerrainMeshes(int_t pass);
 #endif
-#if defined(WII_PLATFORM) || defined(PS2_PLATFORM) || PLATFORM_PC_LEGACY
-	bool isTerrainBuildInProgress() const;
-#ifdef PS2_PLATFORM
-	// Drops an in-flight build and returns its staging lease. The renderer
-	// stays dirty and restarts from scratch on a later scheduler step.
-	void abandonTerrainBuild();
-#endif
 	// A dirty mark caused by a light value change. With
 	// PLATFORM_COALESCE_MESH_REBUILDS an active build keeps going and is
 	// rebuilt once more after it completes, instead of restarting on every
@@ -70,6 +63,13 @@ public:
 	// Set by RenderGlobal for a block change next to the player; the scheduler
 	// runs these ahead of streaming work and to completion.
 	bool urgentRebuild = false;
+#if defined(WII_PLATFORM) || defined(PS2_PLATFORM) || PLATFORM_PC_LEGACY
+	bool isTerrainBuildInProgress() const;
+#ifdef PS2_PLATFORM
+	// Drops an in-flight build and returns its staging lease. The renderer
+	// stays dirty and restarts from scratch on a later scheduler step.
+	void abandonTerrainBuild();
+#endif
 #if PLATFORM_PS2 && MC_LOG_LEVEL >= 2
 	// Monotonic microseconds at the edit that set urgentRebuild; the urgent lane
 	// logs the edit-to-publish latency against it.

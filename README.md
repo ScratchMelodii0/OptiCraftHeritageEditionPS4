@@ -48,7 +48,7 @@ apps/OptiCraft/
 
 The PS4 build targets jailbroken consoles (GoldHEN, Mira) and the shadPS4 emulator through the open-source [OpenOrbis PS4 Toolchain](https://github.com/OpenOrbis/OpenOrbis-PS4-Toolchain). No official Sony SDK is used. Rendering goes through Piglet (the system OpenGL ES 2.0 / EGL implementation), input through libScePad (DualShock 4), and audio through libSceAudioOut.
 
-> **Status:** work in progress. The `ps4-*` presets currently build the bring-up target (Piglet/EGL context, controller polling, eboot/pkg packaging). The full-game backends are being added in phases.
+> **Status:** experimental. Every platform backend is in place and `ps4-release` / `ps4-debug` build the full game, but the port has not yet been verified on real hardware or shadPS4. Please report what you find (the log is in `/data/opticraft/log.txt`).
 
 Game data is read from the package (`/app0/data/`) and worlds and options are written to:
 

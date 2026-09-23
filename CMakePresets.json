@@ -144,14 +144,14 @@
     {
       "name": "ps4-release",
       "displayName": "PS4 Release (x86_64 / OpenOrbis)",
-      "description": "PlayStation 4 homebrew Release build via the OpenOrbis PS4 Toolchain (clang + lld). Requires OO_PS4_TOOLCHAIN. PS4_BRINGUP stays ON until the full-game backends land.",
+      "description": "PlayStation 4 homebrew Release build via the OpenOrbis PS4 Toolchain (clang + lld). Requires OO_PS4_TOOLCHAIN.",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/ps4-release",
       "toolchainFile": "${sourceDir}/cmake/ps4_toolchain.cmake",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
         "PLATFORM": "PS4",
-        "PS4_BRINGUP": "ON",
+        "PS4_BRINGUP": "OFF",
         "PS4_ENABLE_SOUND": "ON",
         "PS4_ENABLE_NETWORK": "ON",
         "MC_LOG_LEVEL": "0"
