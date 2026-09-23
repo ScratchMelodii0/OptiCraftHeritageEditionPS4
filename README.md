@@ -159,6 +159,8 @@ cmake --build build/ps4-release --target ps4-pkg
 
 This writes `bin/ps4/IV0000-OPTC00173_00-OPTICRAFTHERITAG.pkg`. Title id, content id, and title can be changed with `PS4_TITLE_ID`, `PS4_CONTENT_ID`, and `PS4_TITLE`.
 
+Prebuilt packages: every push runs the **PlayStation 4** job in `.github/workflows/build.yml`, which installs the latest OpenOrbis release and uploads an `opticraft-ps4` artifact with `OptiCraft-ps4.pkg` (the game), `OptiCraft-ps4-bringup.pkg` (toolchain/controller smoke test, separate title id), `eboot.bin` and the ELF. Game data is not in the repository, so the game package does not contain it: copy a `data/` folder (with `assets/` and `resources/`) to `/data/opticraft/data` over FTP.
+
 Installing on a console:
 
 1. Load GoldHEN (or another HEN with fake package support).
