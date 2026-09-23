@@ -104,9 +104,9 @@
 #include "platform/Profiler.h"
 #include "platform/WorkProfiler.h"
 #include "platform/ExtendedProfiler.h"
+#include "platform/world/StreamingFrameBudget.h"
 #if PLATFORM_FAST_BLOCK_COLLISIONS || PLATFORM_EARLY_COLLISION_EXIT || PLATFORM_FLOAT_COLLISION_SWEEP
 #include "platform/world/PlatformBlockCollisionSweeper.h"
-#include "platform/world/StreamingFrameBudget.h"
 #endif
 
 #if PLATFORM_BOUNDED_WORLD

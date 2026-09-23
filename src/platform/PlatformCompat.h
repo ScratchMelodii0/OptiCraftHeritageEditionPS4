@@ -3,11 +3,15 @@
 #include <cstdint>
 #include <chrono>
 
-#if defined(PS2_PLATFORM) || defined(WII_PLATFORM)
+#if defined(PS2_PLATFORM) || defined(WII_PLATFORM) || defined(PS4_PLATFORM)
 #include "pc/lwjgl/Mouse.h"
 #include "pc/lwjgl/Display.h"
 #else
 #include <SDL.h>
+#endif
+
+#ifdef PS4_PLATFORM
+#include <thread>
 #endif
 
 #ifdef WII_PLATFORM
@@ -31,7 +35,7 @@ inline uint32_t getTicks()
     // backend is wired up; gettime() reads the Broadway's timebase register
     // directly and is what every other libogc timing path uses.
     return static_cast<uint32_t>(ticks_to_millisecs(gettime()));
-#elif defined(PS2_PLATFORM)
+#elif defined(PS2_PLATFORM) || defined(PS4_PLATFORM)
     using namespace std::chrono;
     return static_cast<uint32_t>(duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count());
 #else
@@ -78,6 +82,8 @@ inline void delay(uint32_t ms)
 #elif defined(PS2_PLATFORM)
     // The PS2 main loop is already synced by the GS flip. Do not busy-wait here.
     (void)ms;
+#elif defined(PS4_PLATFORM)
+    if (ms) std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 #else
     SDL_Delay(ms);
 #endif
@@ -85,7 +91,7 @@ inline void delay(uint32_t ms)
 
 inline void setSmoothInputThreadPriority(bool enabled)
 {
-#if defined(PS2_PLATFORM) || defined(WII_PLATFORM)
+#if defined(PS2_PLATFORM) || defined(WII_PLATFORM) || defined(PS4_PLATFORM)
     // C6's Smooth Input is a JVM main-thread priority tweak. The console ports
     // have different scheduler/audio/input constraints, so changing their main
     // thread priority here would be a new platform policy rather than a faithful
@@ -107,7 +113,7 @@ inline void setSmoothInputThreadPriority(bool enabled)
 
 inline void getMouseState(int *x, int *y)
 {
-#if defined(PS2_PLATFORM) || defined(WII_PLATFORM)
+#if defined(PS2_PLATFORM) || defined(WII_PLATFORM) || defined(PS4_PLATFORM)
     // LWJGL Mouse::getY() is bottom-left origin. SDL_GetMouseState() is
     // top-left origin, and shared GUI code expects that here.
     if (x) *x = lwjgl::Mouse::getX();

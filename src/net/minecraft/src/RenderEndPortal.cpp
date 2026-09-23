@@ -13,7 +13,9 @@
 
 #include <cmath>
 
-#if !defined(PS2_PLATFORM) && !defined(WII_PLATFORM)
+// The textured-portal effect is written against desktop GL (texgen, raw
+// glad calls); every other backend draws the console layer approximation.
+#if PLATFORM_PC
 #include <glad/glad.h>
 #endif
 
@@ -23,14 +25,12 @@ void RenderEndPortal::renderEndPortal(TileEntityEndPortal *, double x, double y,
     if (tileEntityRenderer == nullptr)
         return;
 
-#if !defined(PS2_PLATFORM) && !defined(WII_PLATFORM)
 #if PLATFORM_PC
     if (pcRenderBackendIsDirect3D9())
     {
         renderConsoleLayers(x, y, z, partialTick);
         return;
     }
-#endif
     const float playerX = static_cast<float>(tileEntityRenderer->playerX);
     const float playerY = static_cast<float>(tileEntityRenderer->playerY);
     const float playerZ = static_cast<float>(tileEntityRenderer->playerZ);

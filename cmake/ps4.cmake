@@ -64,6 +64,21 @@ else()
         "${CMAKE_SOURCE_DIR}/external/zlib/contrib/minizip/unzip.c"
     )
     list(APPEND PS4_SOURCES ${PS4_MINIZIP_SOURCES})
+
+    # zlib is compiled from external/zlib rather than linked, so the build does
+    # not depend on the toolchain shipping a libz (the Wii takes its portlibs
+    # one; OpenOrbis provides none). zconf.h is generated the way zlib's own
+    # CMakeLists does it, into the build tree, so a host zconf.h can never be
+    # picked up instead.
+    set(PS4_ZLIB_SOURCES)
+    foreach(_z adler32 compress crc32 deflate gzclose gzlib gzread gzwrite
+               infback inffast inflate inftrees trees uncompr zutil)
+        list(APPEND PS4_ZLIB_SOURCES "${CMAKE_SOURCE_DIR}/external/zlib/${_z}.c")
+    endforeach()
+    list(APPEND PS4_SOURCES ${PS4_ZLIB_SOURCES})
+    set(Z_HAVE_UNISTD_H 1)
+    configure_file("${CMAKE_SOURCE_DIR}/external/zlib/zconf.h.cmakein"
+                   "${CMAKE_BINARY_DIR}/ps4-zlib/zconf.h" @ONLY)
     # The OpenOrbis libc has no fopen64/ftello64 family; the archives are far
     # below 2 GB, so keep minizip on the 32-bit stdio API (same as the Wii).
     set_source_files_properties(${PS4_MINIZIP_SOURCES}
@@ -131,7 +146,10 @@ target_include_directories(OptiCraft PRIVATE
     "${CMAKE_SOURCE_DIR}/src"
     "${CMAKE_SOURCE_DIR}/src/pc"
     "${CMAKE_SOURCE_DIR}/src/ps4"
+    "${CMAKE_SOURCE_DIR}/src/net/minecraft/src"
+    "${CMAKE_SOURCE_DIR}/src/mods"
     "${CMAKE_SOURCE_DIR}/external/stb"
+    "${CMAKE_BINARY_DIR}/ps4-zlib"
     "${CMAKE_SOURCE_DIR}/external/zlib"
     "${CMAKE_SOURCE_DIR}/external/zlib/contrib/minizip"
 )
@@ -149,9 +167,6 @@ if(PS4_ENABLE_SOUND)
 endif()
 if(PS4_ENABLE_NETWORK)
     list(APPEND PS4_SYSTEM_LIBS SceNet SceNetCtl)
-endif()
-if(NOT PS4_BRINGUP)
-    list(APPEND PS4_SYSTEM_LIBS z)
 endif()
 foreach(_lib IN LISTS PS4_SYSTEM_LIBS)
     target_link_libraries(OptiCraft PRIVATE "-l${_lib}")
