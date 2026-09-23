@@ -150,6 +150,107 @@ jobs:
           name: opticraft-wii
           path: OptiCraft-wii.tar.gz
 
+  # ── PlayStation 4 (OpenOrbis homebrew) ───────────────────────────────
+  build-ps4:
+    name: PlayStation 4
+    runs-on: ubuntu-latest
+    env:
+      OO_PS4_TOOLCHAIN: /opt/OpenOrbis/PS4Toolchain
+      # PkgTool.Core is a .NET app; the runner image has no ICU for it.
+      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: "1"
+    steps:
+      - name: Checkout
+        run: |
+          git init
+          git remote add origin ${{ github.server_url }}/${{ github.repository }}.git
+          git fetch --depth 1 origin ${{ github.sha }}
+          git checkout FETCH_HEAD
+
+      - name: Init required submodules
+        run: |
+          git submodule init external/zlib external/stb
+          git submodule update --depth 1 external/zlib external/stb
+
+      - name: Install build tools
+        run: sudo apt update && sudo apt install -y ninja-build clang lld
+
+      - name: Install OpenOrbis PS4 Toolchain (latest release)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          repo=OpenOrbis/OpenOrbis-PS4-Toolchain
+          tag=$(gh release view --repo "$repo" --json tagName -q .tagName)
+          echo "OpenOrbis release: $tag"
+          gh release view --repo "$repo" --json assets -q '.assets[].name'
+          # The Linux build ships as a .tar.gz; Windows/macOS use other names.
+          asset=$(gh release view --repo "$repo" --json assets \
+                  -q '.assets[].name | select(endswith(".tar.gz"))' | head -n1)
+          if [ -z "$asset" ]; then
+            echo "::error::No .tar.gz asset in OpenOrbis release $tag"; exit 1
+          fi
+          gh release download "$tag" --repo "$repo" --pattern "$asset" --dir /tmp/oo
+          mkdir -p /tmp/oo/x && tar -xzf "/tmp/oo/$asset" -C /tmp/oo/x
+          # The archive's top-level layout has changed between releases; locate
+          # the toolchain root by its linker script instead of assuming a path.
+          root=$(dirname "$(find /tmp/oo/x -name link.x -path '*' | head -n1)")
+          test -d "$root/include/orbis"
+          sudo mkdir -p "$(dirname "$OO_PS4_TOOLCHAIN")"
+          sudo mv "$root" "$OO_PS4_TOOLCHAIN"
+          sudo chmod +x "$OO_PS4_TOOLCHAIN"/bin/linux/* || true
+          ls "$OO_PS4_TOOLCHAIN" "$OO_PS4_TOOLCHAIN/bin/linux"
+
+      - name: Configure (bring-up)
+        run: >
+          cmake -B build/ps4-bringup -G Ninja
+          -DCMAKE_TOOLCHAIN_FILE=cmake/ps4_toolchain.cmake
+          -DCMAKE_BUILD_TYPE=Release
+          -DPLATFORM=PS4
+          -DPS4_BRINGUP=ON
+          -DPS4_TITLE="OptiCraft Bring-up"
+          -DPS4_TITLE_ID=OPTC00174
+          -DPS4_CONTENT_ID=IV0000-OPTC00174_00-OPTICRAFTBRINGUP
+
+      # The bring-up package needs no game data, so it proves the toolchain,
+      # signing and packaging on its own and installs next to the game
+      # (different title id).
+      - name: Build bring-up package
+        run: |
+          cmake --build build/ps4-bringup --parallel
+          cmake --build build/ps4-bringup --target ps4-pkg
+          mkdir -p dist
+          mv bin/ps4/*.pkg dist/OptiCraft-ps4-bringup.pkg
+          rm -rf bin/ps4
+
+      - name: Configure (game)
+        run: >
+          cmake -B build/ps4-release -G Ninja
+          -DCMAKE_TOOLCHAIN_FILE=cmake/ps4_toolchain.cmake
+          -DCMAKE_BUILD_TYPE=Release
+          -DPLATFORM=PS4
+          -DPS4_BRINGUP=OFF
+          -DPS4_ENABLE_SOUND=ON
+          -DPS4_ENABLE_NETWORK=ON
+          -DMC_LOG_LEVEL=1
+
+      - name: Build game
+        run: cmake --build build/ps4-release --parallel
+
+      # Game data is not in the repository, so this package carries only the
+      # eboot; the data folder is copied to /data/opticraft/data (see README).
+      - name: Build game package
+        run: |
+          cmake --build build/ps4-release --target ps4-pkg
+          mv bin/ps4/*.pkg dist/OptiCraft-ps4.pkg
+          cp bin/ps4/pkg/eboot.bin dist/eboot.bin
+          cp bin/ps4/OptiCraft.elf dist/OptiCraft-ps4.elf
+          tar -C dist -czf OptiCraft-ps4.tar.gz .
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: opticraft-ps4
+          path: OptiCraft-ps4.tar.gz
+
   # ── Windows x64 GCC (MinGW) ──────────────────────────────────────────
   build-windows-x64-gcc:
     name: Windows x64 GCC
